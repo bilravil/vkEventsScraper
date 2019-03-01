@@ -18,9 +18,8 @@
   "homepage": "https://github.com/bilravil/vkEventsScraper#readme",
   "dependencies": {
     "cheerio": "^1.0.0-rc.2",
+    "csv": "^5.1.1",
     "debug": "^4.1.1",
-    "express": "^4.16.4",
-    "pg": "^7.8.1",
     "request": "^2.88.0"
   }
 }

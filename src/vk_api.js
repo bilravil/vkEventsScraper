@@ -14,16 +14,25 @@ class Vk {
         uri: VK_API + '/groups.getById',
         qs: {
           group_ids,
-          fields: 'members_count, city',
+          fields: 'members_count',
           version: API_VERSION,
           access_token: this.access_token
         }
       }
 
-      request.post(opts, (err, response, body) => {
-        if (err)
-          return reject(err);
-        return resolve(body);
+      request.post(opts, (err, response) => {
+        if (err) return reject(err);
+        try {
+          const body = JSON.parse(response.body).response;
+          // Info about group is the beginning of response array;
+          const group = body[0] || {};
+          body.shift();
+
+          const events = body;
+          return resolve({group, events});
+        } catch (error) {
+          return resolve([]);
+        }
       });
     })
   }

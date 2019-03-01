@@ -41,8 +41,9 @@ class Scraper {
           } catch (e) {true;}
           return reject(err);
         }
-        fs.writeFileSync('vk.html', resp.body)
-        const ids = this.parseHtml(resp.body);
+
+        let ids = url.split('https://vk.com/')[1] + ',';
+        ids += this.parseHtml(resp.body);
         return resolve(ids);
       });
     })
@@ -50,3 +51,4 @@ class Scraper {
 }
 
 module.exports = new Scraper();
+
