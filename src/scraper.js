@@ -1,7 +1,7 @@
 const request = require('request');
 const cheerio = require('cheerio');
-const fs = require('fs');
 
+let BAN_TIMEOUT = 1 * 60000; // 1 min timeout on the first BAN from Vk.
 class Scraper {
   parseHtml(html) {
     let result = '';
@@ -17,36 +17,40 @@ class Scraper {
   }
 
   get(url) {
-    return new Promise((resolve, reject) => {
-      const opts = {
-        url,
-        method: 'GET',
-        gzip: true,
-        Encoding: 'utf-8',
-        headers: {
-          'Content-Type': 'text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,image/apng,*/*;q=0.8',
-          'accept-language': 'en-US; q=0.8,en;q=0.7',
-          'Accept-Encoding': 'gzip',
-          'User-Agent': 'Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/71.0.3578.98 Safari/537.36'
-        }
-      };
+    return new Promise(async (resolve, reject) => {
 
-      request(opts, async (err, resp, body) => {
-        if (err || resp.statusCode >= 400) {
-          if (!err) err = new Error(`HTTP Error ${resp.statusCode}`);
-          err.opts = opts;
-          err.body = body;
-          try {
-            err.body = JSON.parse(err.body);
-          } catch (e) {true;}
-          return reject(err);
-        }
+      const func = call.bind(this);
+      await func();
 
-        let ids = url.split('https://vk.com/')[1] + ',';
-        ids += this.parseHtml(resp.body);
-        return resolve(ids);
-      });
-    })
+      async function call() {
+
+        const opts = {
+          url,
+          method: 'GET',
+          gzip: true,
+          Encoding: 'utf-8',
+          headers: {
+            'Content-Type': 'text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,image/apng,*/*;q=0.8',
+            'accept-language': 'en-US; q=0.8,en;q=0.7',
+            'Accept-Encoding': 'gzip',
+            'User-Agent': 'Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/71.0.3578.98 Safari/537.36'
+          }
+        };
+
+        request(opts, async (err, resp, body) => {
+          if (err || resp.statusCode >= 400) {
+            console.log('TIMEOUT ERROR');
+            BAN_TIMEOUT *= 2;
+            return setTimeout(call.bind(this), BAN_TIMEOUT);
+          }
+
+          let ids = url.split('https://vk.com/')[1] + ',';
+          ids += this.parseHtml(resp.body);
+          return resolve(ids);
+
+        })
+      }
+    });
   }
 }
 
