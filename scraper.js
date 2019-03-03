@@ -39,8 +39,8 @@ class Scraper {
 
         request(opts, async (err, resp, body) => {
           if (err || resp.statusCode >= 400) {
-            console.log('TIMEOUT ERROR');
             BAN_TIMEOUT *= 2;
+            console.log('TIMEOUT ERROR. Repeat request through', BAN_TIMEOUT / 60000, 'min');
             return setTimeout(call.bind(this), BAN_TIMEOUT);
           }
 

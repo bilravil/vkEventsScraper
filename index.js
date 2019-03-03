@@ -5,7 +5,7 @@ const parse = require('csv-parse');
 const Scraper = require('./scraper');
 const Vk = require('./vk_api');
 
-const CSV_FILE = '../groups.csv';
+const CSV_FILE = './groups.csv';
 const RESULT_JSON = './events.json';
 
 const VK_TOKEN = '8fc985b5f5ee97250340898ec6178b0675b867cafa93359dd201ed043e4c73d51aaf5e6bbcc275e030e45';
