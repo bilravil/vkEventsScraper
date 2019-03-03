@@ -2,6 +2,7 @@ const request = require('request');
 
 const VK_API = 'https://api.vk.com/method/';
 const API_VERSION = '5.92';
+const FIELDS = 'members_count,start_date,finish_date,city'
 
 class Vk {
   constructor(access_token) {
@@ -14,7 +15,7 @@ class Vk {
         uri: VK_API + '/groups.getById',
         qs: {
           group_ids,
-          fields: 'members_count',
+          fields: FIELDS,
           version: API_VERSION,
           access_token: this.access_token
         }
