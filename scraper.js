@@ -6,8 +6,11 @@ class Scraper {
   parseHtml(html) {
     let result = '';
 
+    const GROUP_EVENTS = '#group_events .line_cell.clear_fix';
+    const PUBLIC_EVENTS = '#public_events .line_cell.clear_fix';
+
     const $ = cheerio.load(html);
-    const events = $('#public_events .line_cell.clear_fix');
+    const events = GROUP_EVENTS.length ? $(GROUP_EVENTS) : $(PUBLIC_EVENTS);
 
     events.each((i, attr) => {
       let id = $(attr).attr('data-id');
